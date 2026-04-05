@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>딸기라떼 먹고 싶다</title>
+    <script src="https://kit.fontawesome.com/751d015302.js" crossorigin="anonymous"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="editor-panel">
+        <div class="editor-header">
+            <div class="header-titles">
+                <h2>SNS 카드 만들기</h2>
+                <p></p>
+            </div>
+            <button class="btn-guide-toggle" onclick="document.getElementById('guide-box').classList.toggle('hidden')">
+                <i class="fa-regular fa-circle-question"></i>
+            </button>
+        </div>
+        
+        <div class="editor-body">
+            <div id="guide-box" class="guide-box hidden">
+                <div class="guide-section">
+                    <p class="guide-title"><i class="fa-solid fa-bolt" style="color: var(--primary);"></i> <strong>사용 방법</strong></p>
+                    <ol>
+                        <li><strong>스킨 세팅(1회):</strong> 맨 아래 설정 카드에서 CSS/JS를 복사해 각자 스킨의 html의 <code>&lt;/body&gt;</code> 바로 위와 css의 가장 아래에 넣습니다.</li>
+                        <li><strong>사진 첨부:</strong> 외부 URL을 넣거나 폴더 아이콘을 눌러 PC에서 업로드하세요.</li>
+                        <li><strong>본문 복사:</strong> 완성 후 <strong>[본문 복사]</strong>를 눌러 티스토리의 <strong>글쓰기→html모드 또는 html 블럭</strong>에 붙여넣습니다.</li>
+                    </ol>
+                </div>
+                
+                <div class="guide-divider"></div>
+                
+                <div class="guide-section caution">
+                    <p class="guide-title"><i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> <strong>주의사항</strong></p>
+                    <ul>
+                        <li>티스토리 기본 모드에서 글을 수정하면 에디터 특성상 일부 코드가 유실될 수 있습니다.</li>
+                        <li>게시물 내용이나 댓글에 <code>{{텍스트}}</code> 형식으로 입력하면 파란색으로 강조됩니다.</li>
+                        <li>이미지 저장 시 이미지 첨부에 외부 URL을 사용한 경우 브라우저 보안 정책(CORS)으로 인해 저장이 안 될 수 있습니다. (이 경우 PC 업로드 권장)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="editor-section">
+                <div class="section-title-wrap">
+                    <h3 class="section-title"><i class="fa-solid fa-circle-user icon-muted"></i> 작성자 정보</h3>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="in-show-ring" checked onchange="updatePreview()">
+                        <span class="slider"></span>
+                        <span class="toggle-label-text">스토리 링</span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <input type="text" class="styled-input" id="in-name" value="" oninput="updatePreview()" placeholder="아이디">
+                    <div class="upload-row">
+                        <input type="text" class="styled-input" id="in-avatar" value="" oninput="clearLocal('avatar')" placeholder="프로필 사진 URL">
+                        <label class="btn-icon-upload" title="PC 사진 업로드">
+                            <i class="fa-solid fa-paperclip"></i>
+                            <input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(this, 'avatar')">
+                        </label>
+                    </div>
+                    <input type="text" class="styled-input" id="in-music" value="" oninput="updatePreview()" placeholder="음악 제목 (예: Hanae・Ototoioide)">
+                </div>
+            </div>
+
+            <div class="editor-section">
+                <h3 class="section-title"><i class="fa-solid fa-image icon-muted"></i> 게시물 내용</h3>
+                <div class="input-group">
+                    <div class="upload-row">
+                        <input type="text" class="styled-input" id="in-image" value="" oninput="clearLocal('image')" placeholder="게시물 사진 URL">
+                        <label class="btn-icon-upload" title="PC 사진 업로드">
+                            <i class="fa-solid fa-paperclip"></i>
+                            <input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(this, 'image')">
+                        </label>
+                    </div>
+                    
+                    <div class="row-inputs">
+                        <input type="number" class="styled-input" id="in-action-heart" value="" oninput="updatePreview()" placeholder="하트 수 (0은 숨김)">
+                        <input type="number" class="styled-input" id="in-action-share" value="" oninput="updatePreview()" placeholder="공유 수 (0은 숨김)">
+                    </div>
+
+                    <div class="like-type-selector">
+                        <label class="radio-label"><input type="radio" name="like-type" value="text" checked onchange="updatePreview()"> ID로 표시</label>
+                        <label class="radio-label"><input type="radio" name="like-type" value="none" onchange="updatePreview()"> 표시 안 함</label>
+                    </div>
+                    
+                    <input type="text" class="styled-input" id="in-like-id" value="" oninput="updatePreview()" placeholder="기준 ID">
+                    <textarea class="styled-input" id="in-content" oninput="updatePreview()" placeholder="게시물 본문을 입력하세요..." rows="3"></textarea>
+                    <input type="text" class="styled-input" id="in-time" value="" oninput="updatePreview()" placeholder="작성 시간">
+                </div>
+            </div>
+
+            <div class="editor-section">
+                <h3 class="section-title"><i class="fa-solid fa-message icon-muted"></i> 댓글 관리</h3>
+                <div id="comment-editor-container"></div>
+                <button class="btn-add-comment" onclick="addComment()">+ 새 댓글 추가</button>
+            </div>
+
+            <div class="editor-section setup-area">
+                <div class="setup-info">
+                    <h4 class="setup-label">초기 스킨 세팅</h4>
+                    <p class="setup-desc">스킨에 1회만 등록하세요.</p>
+                </div>
+                <div class="setup-actions">
+                    <button class="btn-tiny" onclick="copyCSS()"><i class="fa-brands fa-css3-alt color-css"></i> CSS</button>
+                    <button class="btn-tiny" onclick="copyJS()"><i class="fa-brands fa-js color-js"></i> JS</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-footer">
+            <div class="action-buttons">
+                <button class="btn btn-html" onclick="copyHTML()"><i class="fa-solid fa-code"></i> 본문 복사</button>
+                <button class="btn btn-download" onclick="downloadImage()"><i class="fa-solid fa-download"></i> 이미지 저장</button>
+            </div>
+            <p id="copy-msg"></p>
+        </div>
+    </div>
+
+    <div class="preview-panel">
+        <div class="sns-post-preview" id="preview-card">
+            <div class="sns-header">
+                <div class="sns-profile">
+                    <div class="sns-avatar-ring active" id="out-avatar-ring">
+                        <div class="sns-avatar-box">
+                            <img id="out-avatar" src="" alt="">
+                        </div>
+                    </div>
+                    <div class="sns-info">
+                        <span class="sns-name" id="out-name"></span>
+                        <div class="sns-music-container" id="out-music-container" style="display:none;">
+                            <span class="fa-solid fa-music">&#8203;</span> <span id="out-music"></span>
+                        </div>
+                    </div>
+                </div>
+                <button class="sns-more"><span class="fa-solid fa-ellipsis-vertical">&#8203;</span></button>
+            </div>
+            
+            <div class="sns-img-box">
+                <img id="out-image" src="" alt="">
+            </div>
+            
+            <div class="sns-body">
+                <div class="sns-actions">
+                    <div class="sns-actions-left">
+                        <button><span class="fa-regular fa-heart">&#8203;</span> <span class="sns-action-count" id="out-action-heart" style="display:none;"></span></button>
+                        <button><span class="fa-regular fa-comment">&#8203;</span> <span class="sns-action-count" id="out-comment-count" style="display:none;"></span></button>
+                        <button><span class="fa-regular fa-paper-plane">&#8203;</span> <span class="sns-action-count" id="out-action-share" style="display:none;"></span></button>
+                    </div>
+                    <button class="sns-action-btn-right"><span class="fa-regular fa-bookmark">&#8203;</span></button>
+                </div>
+                <div class="sns-likes" id="out-likes-container"></div>
+                <div class="sns-content"><strong id="out-name-bold"></strong> <span id="out-content"></span></div>
+                <div class="sns-time" id="out-time"></div>
+                
+                <div class="sns-comments-area" id="out-comments-area" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
